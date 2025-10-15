@@ -1,0 +1,21 @@
+#ifndef COSTS_H
+#define COSTS_H
+
+#define SYRINGUE_COST 5
+#define PILL_COST 6
+#define SCALPEL_COST 7
+#define THERMOMETER_COST 5
+#define STETHOSCOPE_COST 3
+#define TRANSFER_COST 10
+#define PRETREATMENT_COST 10
+#define TREATMENT_COST 9
+#define REHAB_COST 20
+
+#define SUPPLIER_COST 4
+#define NURSE_COST 6
+#define DOCTOR_COST 8
+
+#define INSURANCE_CONTRIBUTION 10
+
+
+#endif // COSTS_H
