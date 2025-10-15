@@ -1,10 +1,8 @@
 #include "utils.h"
 
 void endService(const std::vector<std::unique_ptr<PcoThread> > &threads) {
-
-    // TODO
-
     std::cout << "It's time to end !" << std::endl;
+	for (const auto &t : threads) t->requestStop();
 }
 
 std::vector<Ambulance*> createAmbulances(int nbAmbulances, int idStart){
