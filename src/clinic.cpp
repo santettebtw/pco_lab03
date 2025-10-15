@@ -19,7 +19,7 @@ void Clinic::run() {
 
     while (true) {
         clock->worker_wait_day_start();
-        if (false /* TODO condition d'arrêt */) break;
+        if (PcoThread::thisThread()->stopRequested()) break;
 
         // Essayer de traiter le prochain patient
         processNextPatient();
