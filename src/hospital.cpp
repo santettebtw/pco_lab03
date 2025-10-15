@@ -14,7 +14,7 @@ void Hospital::run() {
 
     while (true) {
         clock->worker_wait_day_start();
-        if (false /* TODO condition d'arrêt */) break;
+        if (PcoThread::thisThread()->stopRequested()) break;
 
         transferSickPatientsToClinic();
         updateRehab();
