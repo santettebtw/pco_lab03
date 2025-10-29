@@ -47,5 +47,5 @@ void Insurance::payBills() {
             it = unpaidBills.erase(it);
         }
     }
-    // TODO
+
 }

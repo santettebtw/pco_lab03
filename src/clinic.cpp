@@ -38,8 +38,8 @@ void Clinic::run() {
 
 
 int Clinic::transfer(ItemType what, int qty) {
-
     // TODO
+
 
 }
 
@@ -68,6 +68,7 @@ void Clinic::sendPatientsToRehab() {
 }
 
 void Clinic::orderResources() {
+    //this->suppliers.buy();
 
     // TODO
 

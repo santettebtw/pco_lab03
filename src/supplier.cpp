@@ -26,21 +26,49 @@ void Supplier::run() {
     logger() << "Supplier " <<  uniqueId << " stopping with fund " << money << std::endl;
 }
 
+
+/**
+     * @brief Attempts to produce a random resource from the supplier’s product list.
+     *
+     * - Chooses a random item from the available resources.
+     * - Checks if there are enough funds to pay the employee producing it.
+     * - Produces the item and updates stock accordingly.
+     */
 void Supplier::attemptToProduceResource() {
 
+    if(money < getAmountPaidToEmployees(EmployeeType::Supplier)){
+        return;
+    }
+    std::map<ItemType, int> tmp;
+    for (auto item : resourcesSupplied) {
+        tmp[item] = 1;
+    }
+    ItemType recourcess = chooseRandomItem(tmp);
+    stocks[recourcess]++;
+    money -= getAmountPaidToEmployees(EmployeeType::Supplier);
+    nbEmployeesPaid++;
     // TODO
-
 }
 
+/**
+     * @brief Handles a purchase request from another Seller (e.g., clinic).
+     *
+     * Deducts the purchased items from the supplier’s stock and
+     * returns the bill to the buyer.
+     *
+     * @param it The type of item being purchased.
+     * @param qty The quantity requested.
+     * @return The total cost of the transaction.
+     */
 int Supplier::buy(ItemType it, int qty) {
 
-    // TODO
+    stocks[it] -= qty;
+    return getCostPerUnit(it)*qty;
+
 }
 
 void Supplier::pay(int bill) {
-
-    // TODO
-
+    this->money += bill;
 }
 
 int Supplier::getMaterialCost() {
