@@ -4,6 +4,9 @@
 #include <iostream>
 #include <random>
 
+PcoMutex Mutex_clinic;
+
+
 Clinic::Clinic(int id, int fund, std::vector<ItemType> resourcesNeeded)
 : Seller(fund, id), resourcesNeeded(std::move(resourcesNeeded)) {
     for (auto it : this->resourcesNeeded) {
@@ -38,51 +41,87 @@ void Clinic::run() {
 
 
 int Clinic::transfer(ItemType what, int qty) {
-    // TODO
 
+    if(what != ItemType::SickPatient){
+        return 0;
+    }
+    int salary = getEmployeeSalary(EmployeeType::TreatmentSpecialist);
+    int total = 0;
+    for(int x = 0; x < qty; ++x){
+        total += salary;
+        if(money < total){
+            return x;
+        }
+    }
+
+    return qty;
 
 }
 
 bool Clinic::hasResourcesForTreatment() const {
-
-    // TODO
+    for (const auto& [item, quantity] : stocks) {
+        if (quantity == 0) {
+            return false;
+        }
+    }
+    return true;
 
 }
 
 void Clinic::payBills() {
-
-    // TODO
-    
+    for(auto it = unpaidBills.begin(); it != unpaidBills.end(); ++it){
+        if(money >= it->second){
+            it->first->pay(it->second);
+            Mutex_clinic.lock();
+            money -= it->second;
+            Mutex_clinic.unlock();
+            it = unpaidBills.erase(it);
+        }
+    }
 }
 
 void Clinic::processNextPatient() {
-
-    // TODO
-
+    if(hasResourcesForTreatment() && money >=  getEmployeeSalary(EmployeeType::TreatmentSpecialist)){
+        treatOne();
+    }else{
+        orderResources();
+    }
 }
 
 void Clinic::sendPatientsToRehab() {
-
-    // TODO
-
+    if (!hospitals.empty()) {
+        hospitals[0]->transfer(ItemType::RehabPatient, stocks[ItemType::RehabPatient]);
+        stocks[ItemType::RehabPatient] = 0;
+        insurance->invoice(getTreatmentCost(), this);
+    }
 }
 
 void Clinic::orderResources() {
-    //this->suppliers.buy();
 
-    // TODO
+    for (auto& [item, quantity] : stocks) {
+        if (quantity != 0) continue;
+
+        Supplier *supplier = chooseRandomSupplier(item);
+        int bill = supplier->buy(item, 1);
+        unpaidBills.push_back({supplier, bill});
+    }
 
 }
 
 void Clinic::treatOne() {
 
     // TODO
-
+    stocks[ItemType::Stethoscope]--;
+    stocks[ItemType::Thermometer]--;
+    stocks[ItemType::Scalpel]--;
+    stocks[ItemType::Pill]--;
+    stocks[ItemType::Syringe]--;
+    stocks[ItemType::SickPatient]--;
+    stocks[ItemType::RehabPatient]++;
 }
 
 void Clinic::pay(int bill) {
-
-    // TODO
+    this->money += bill;
 
 }
 

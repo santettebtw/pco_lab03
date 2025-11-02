@@ -3,7 +3,7 @@
 #include <pcosynchro/pcothread.h>
 
 
-PcoMutex mutex;
+PcoMutex mutex_ins;
 
 Insurance::Insurance(int uniqueId, int fund) : Seller(fund, uniqueId) {}
 
@@ -31,9 +31,9 @@ void Insurance::receiveContributions() {
 }
 
 void Insurance::invoice(int bill, Seller* who) {
-    mutex.lock();
+    mutex_ins.lock();
     unpaidBills.push_back({who,bill});
-    mutex.unlock();
+    mutex_ins.unlock();
 }
 
 void Insurance::payBills() {
@@ -41,9 +41,9 @@ void Insurance::payBills() {
     for(auto it = unpaidBills.begin(); it != unpaidBills.end(); ++it){
         if(money >= it->second){
             it->first->pay(it->second);
-            mutex.lock();
+            mutex_ins.lock();
             money -= it->second;
-            mutex.unlock();
+            mutex_ins.unlock();
             it = unpaidBills.erase(it);
         }
     }
