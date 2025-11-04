@@ -85,6 +85,7 @@ private:
     void payBills();
 
 private:
+
     std::vector<std::pair<Seller*, int>> unpaidBills; ///< List of healthcare providers (Sellers) awaiting payment and their corresponding bill amounts.
 };
 
