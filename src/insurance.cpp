@@ -37,15 +37,21 @@ void Insurance::invoice(int bill, Seller* who) {
 }
 
 void Insurance::payBills() {
-
-    for(auto it = unpaidBills.begin(); it != unpaidBills.end(); ++it){
-        if(money >= it->second){
-            it->first->pay(it->second);
-            mutex_ins.lock();
-            money -= it->second;
-            mutex_ins.unlock();
-            it = unpaidBills.erase(it);
-        }
-    }
-
+	mutex_ins.lock();
+	for(auto it = unpaidBills.begin(); it != unpaidBills.end(); ){
+		if(money >= it->second){
+			int billAmount = it->second;
+			Seller* beneficiary = it->first; // NOTE: save before erase, was using invalid iterator after erase
+			money -= billAmount;
+			it = unpaidBills.erase(it);
+			mutex_ins.unlock(); // NOTE: similar to Clinic::payBills()
+			
+			beneficiary->pay(billAmount);
+			
+			mutex_ins.lock(); // relock mutex before looping back
+		} else {
+			++it; // only increment if we don't pay the bill
+		}
+	}
+	mutex_ins.unlock();
 }

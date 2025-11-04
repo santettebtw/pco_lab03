@@ -3,6 +3,7 @@
 #include <pcosynchro/pcothread.h>
 #include <iostream>
 
+PcoMutex Mutex_supplier;
 
 Supplier::Supplier(int uniqueId, int fund, std::vector<ItemType> resourcesSupplied)
     : Seller(fund, uniqueId), resourcesSupplied(resourcesSupplied) {
@@ -61,14 +62,17 @@ void Supplier::attemptToProduceResource() {
      * @return The total cost of the transaction.
      */
 int Supplier::buy(ItemType it, int qty) {
-
-    stocks[it] -= qty;
-    return getCostPerUnit(it)*qty;
-
+	auto it_stock = stocks.find(it);
+    // make sure the item is in the stock and the quantity is available
+	if (it_stock == stocks.end() || it_stock->second < qty) return 0;
+	stocks[it] -= qty;
+	return getCostPerUnit(it) * qty;
 }
 
 void Supplier::pay(int bill) {
-    this->money += bill;
+	Mutex_supplier.lock();
+	money += bill;
+	Mutex_supplier.unlock();
 }
 
 int Supplier::getMaterialCost() {

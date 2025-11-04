@@ -108,6 +108,7 @@ private:
     int maxBeds;                   ///< Maximum number of patients the hospital can accommodate.
     int nbNursingStaff;            ///< Number of nursing staff employed.
     int nbFreed = 0;               ///< Number of patients who have completed treatment and left the hospital.
+    std::vector<std::pair<int, int>> rehabBatches; ///< Batches of rehab patients: (count, days_remaining)
 };
 
 #endif // HOSPITAL_H
